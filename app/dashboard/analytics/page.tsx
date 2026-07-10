@@ -1,14 +1,15 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useVehicles } from '@/lib/hooks/use-vehicles'
+// import { useVehicles } from '@/lib/hooks/use-vehicles'
 import FuelTrends from '@/components/fuel-trends'
 import MaintenanceChart from '@/components/maintenance-chart'
 import ExpenseBreakdown from '@/components/expense-breakdown'
+import { useVehicles, type Vehicle } from '@/lib/hooks/use-vehicles'
 
 export default function AnalyticsPage() {
   const { vehicles } = useVehicles()
-  const [selectedVehicle, setSelectedVehicle] = useState(null)
+const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null)
 
   useEffect(() => {
     if (vehicles.length > 0 && !selectedVehicle) {

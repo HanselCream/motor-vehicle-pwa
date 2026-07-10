@@ -8,7 +8,9 @@ import AddDocumentForm from '@/components/add-document-form'
 
 export default function DocumentsPage() {
   const { vehicles } = useVehicles()
-  const [selectedVehicle, setSelectedVehicle] = useState(null)
+ const [selectedVehicle, setSelectedVehicle] = useState<
+  ReturnType<typeof useVehicles>['vehicles'][number] | null
+>(null)
   const [documents, setDocuments] = useState<any[]>([])
   const [showAddForm, setShowAddForm] = useState(false)
   const supabase = createClient()

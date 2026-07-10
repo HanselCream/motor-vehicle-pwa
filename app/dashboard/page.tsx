@@ -11,7 +11,9 @@ import Link from 'next/link'
 
 export default function DashboardPage() {
   const { vehicles, loading, fetchVehicles } = useVehicles()
-  const [selectedVehicle, setSelectedVehicle] = useState(null)
+  const [selectedVehicle, setSelectedVehicle] = useState<
+  ReturnType<typeof useVehicles>['vehicles'][number] | null
+>(null)
 
   useEffect(() => {
     fetchVehicles()

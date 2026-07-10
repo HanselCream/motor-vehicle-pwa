@@ -20,7 +20,9 @@ interface Part {
 
 export default function PartsPage() {
   const { vehicles } = useVehicles()
-  const [selectedVehicle, setSelectedVehicle] = useState(null)
+  const [selectedVehicle, setSelectedVehicle] = useState<
+  ReturnType<typeof useVehicles>['vehicles'][number] | null
+>(null)
   const [parts, setParts] = useState<Part[]>([])
   const [showAddForm, setShowAddForm] = useState(false)
   const supabase = createClient()

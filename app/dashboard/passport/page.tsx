@@ -7,7 +7,9 @@ import { Download, Share2 } from 'lucide-react'
 
 export default function PassportPage() {
   const { vehicles } = useVehicles()
-  const [selectedVehicle, setSelectedVehicle] = useState(null)
+  const [selectedVehicle, setSelectedVehicle] = useState<
+  ReturnType<typeof useVehicles>['vehicles'][number] | null
+>(null)
 
   useEffect(() => {
     if (vehicles.length > 0 && !selectedVehicle) {
