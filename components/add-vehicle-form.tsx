@@ -36,16 +36,19 @@ export default function AddVehicleForm({ onSuccess }: AddVehicleFormProps) {
 
       if (!user) throw new Error('User not authenticated')
 
-      await supabase.from('vehicles').insert([
+      const { error } = await supabase.from('vehicles').insert([
         {
           ...data,
           user_id: user.id,
         },
       ])
 
+      if (error) throw error
+
       e.currentTarget.reset()
       onSuccess()
     } catch (err) {
+      console.error('[v0] Vehicle add error:', err)
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
