@@ -45,7 +45,9 @@ export default function AddVehicleForm({ onSuccess }: AddVehicleFormProps) {
 
       if (error) throw error
 
-      e.currentTarget.reset()
+      if (e.currentTarget) {
+        e.currentTarget.reset()
+      }
       onSuccess()
     } catch (err) {
       console.error('[v0] Vehicle add error:', err)

@@ -70,7 +70,7 @@ export default function VehicleManager({ vehicles, onVehiclesChange }: VehicleMa
             onClick={() => setShowAddForm(true)}
             className="w-full rounded-lg border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/10"
           >
-            <Plus className="mb-0.5 inline-block h-4 w-4" /> Add Another Vehicle
+            Add Another Vehicle
           </button>
         </>
       )}
