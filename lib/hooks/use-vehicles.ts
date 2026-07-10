@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 export interface Vehicle {
@@ -21,19 +21,34 @@ export function useVehicles() {
   const fetchVehicles = useCallback(async () => {
     setLoading(true)
     try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (!user) {
+        setVehicles([])
+        return
+      }
+
       const { data, error } = await supabase
         .from('vehicles')
         .select('*')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false })
 
       if (error) throw error
+      console.log('[v0] Fetched vehicles:', data)
       setVehicles(data || [])
     } catch (error) {
-      console.error('Error fetching vehicles:', error)
+      console.error('[v0] Error fetching vehicles:', error)
     } finally {
       setLoading(false)
     }
   }, [supabase])
+
+  useEffect(() => {
+    fetchVehicles()
+  }, [fetchVehicles])
 
   const addVehicle = useCallback(
     async (vehicleData: Omit<Vehicle, 'id'>) => {
