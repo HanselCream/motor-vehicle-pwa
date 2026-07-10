@@ -92,6 +92,10 @@ export default function LogsList({ vehicleId, logType }: LogsListProps) {
         return <CreditCard className="h-4 w-4 text-primary" />
     }
   }
+  const isRecent = (log: any) => {
+  const d = new Date(log.service_date || log.fuel_date || log.expense_date)
+  return Date.now() - d.getTime() < 86400000 // <24h = "NEW"
+}
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -106,10 +110,14 @@ export default function LogsList({ vehicleId, logType }: LogsListProps) {
       {logs.map(log => (
         <div
           key={log.id}
-          className="flex items-center justify-between rounded-lg border border-border bg-card p-4"
-        >
-          <div className="flex items-start gap-3">
-            <div className="mt-1">{getIcon()}</div>
+          className={`flex items-center justify-between rounded-lg border-l-4 border-y border-r border-border bg-card p-4 ${
+  isRecent(log) ? 'border-l-primary' : 'border-l-border'
+}`}>
+  {isRecent(log) && (
+  <span className="ml-2 rounded-full bg-primary/20 px-2 py-0.5 text-[10px] font-semibold text-primary">NEW</span>
+)}
+  <div className="flex items-start gap-3">
+    <div className="mt-1 rounded-lg bg-primary/10 p-2">{getIcon()}</div>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-foreground">
                 {logType === 'maintenance'
@@ -129,7 +137,7 @@ export default function LogsList({ vehicleId, logType }: LogsListProps) {
                   )}
                 </span>
                 {log.odometer_km && <span>• {log.odometer_km.toLocaleString()} km</span>}
-                {log.cost && <span>• ₱{log.cost.toFixed(2)}</span>}
+                {log.cost && <span className="font-semibold text-primary">₱{log.cost.toFixed(2)}</span>}
                 {log.amount && <span>• ₱{log.amount.toFixed(2)}</span>}
               </div>
             </div>

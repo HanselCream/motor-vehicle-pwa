@@ -6,10 +6,11 @@ import { createClient } from '@/lib/supabase/client'
 interface AddLogFormProps {
   vehicleId: string
   logType: 'maintenance' | 'fuel' | 'expense'
+  currentOdometer?: number
   onSuccess: () => void
 }
 
-export default function AddLogForm({ vehicleId, logType, onSuccess }: AddLogFormProps) {
+export default function AddLogForm({ vehicleId, logType, currentOdometer, onSuccess }: AddLogFormProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const supabase = createClient()
@@ -95,7 +96,10 @@ export default function AddLogForm({ vehicleId, logType, onSuccess }: AddLogForm
     }
   }
 
-  const today = new Date().toISOString().split('T')[0]
+const now = new Date()
+const nowLocal = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+  .toISOString()
+  .slice(0, 16) // "YYYY-MM-DDTHH:mm"
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -125,23 +129,21 @@ export default function AddLogForm({ vehicleId, logType, onSuccess }: AddLogForm
           </div>
 
           <div>
-            <label className="text-sm font-medium text-foreground">Service Date</label>
-            <input
-              type="date"
-              name="service_date"
-              required
-              defaultValue={today}
+<label className="text-sm font-medium text-foreground">Service Date</label>
+<input type="datetime-local" name="service_date" required defaultValue={nowLocal}
               className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-foreground"
             />
           </div>
 
           <div>
-            <label className="text-sm font-medium text-foreground">Odometer (km)</label>
-            <input
-              type="number"
-              name="odometer_km"
-              className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-foreground"
-            />
+<label className="text-sm font-medium text-foreground">Odometer (km)</label>
+<input
+  type="number"
+  name="odometer_km"
+  required
+  defaultValue={currentOdometer || ''}
+  className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-foreground"
+/>
           </div>
 
           <div>
@@ -218,12 +220,8 @@ export default function AddLogForm({ vehicleId, logType, onSuccess }: AddLogForm
           </div>
 
           <div>
-            <label className="text-sm font-medium text-foreground">Fuel Date</label>
-            <input
-              type="date"
-              name="fuel_date"
-              required
-              defaultValue={today}
+<label className="text-sm font-medium text-foreground">Fuel Date</label>
+<input type="datetime-local" name="fuel_date" required defaultValue={nowLocal}
               className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-foreground"
             />
           </div>
@@ -283,12 +281,8 @@ export default function AddLogForm({ vehicleId, logType, onSuccess }: AddLogForm
           </div>
 
           <div>
-            <label className="text-sm font-medium text-foreground">Expense Date</label>
-            <input
-              type="date"
-              name="expense_date"
-              required
-              defaultValue={today}
+<label className="text-sm font-medium text-foreground">Expense Date</label>
+<input type="datetime-local" name="expense_date" required defaultValue={nowLocal}
               className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-foreground"
             />
           </div>

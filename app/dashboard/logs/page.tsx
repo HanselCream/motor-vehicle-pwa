@@ -5,12 +5,15 @@ import { useVehicles } from '@/lib/hooks/use-vehicles'
 import LogsList from '@/components/logs-list'
 import AddLogForm from '@/components/add-log-form'
 import { Plus, X } from 'lucide-react'
+import type { Vehicle } from '@/lib/hooks/use-vehicles'
+
+type LogType = 'maintenance' | 'fuel' | 'expense'
 
 export default function LogsPage() {
   const { vehicles } = useVehicles()
-  const [selectedVehicle, setSelectedVehicle] = useState(null)
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null)
   const [showAddForm, setShowAddForm] = useState(false)
-  const [logType, setLogType] = useState('maintenance')
+  const [logType, setLogType] = useState<LogType>('maintenance')
 
   useEffect(() => {
     if (vehicles.length > 0 && !selectedVehicle) {
@@ -65,7 +68,7 @@ export default function LogsPage() {
         ].map(tab => (
           <button
             key={tab.id}
-            onClick={() => setLogType(tab.id)}
+            onClick={() => setLogType(tab.id as LogType)}
             className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
               logType === tab.id
                 ? 'bg-primary text-primary-foreground'
@@ -84,23 +87,21 @@ export default function LogsPage() {
 
       {/* Add Log Modal */}
       {showAddForm && selectedVehicle && (
-        <div className="fixed inset-0 z-50 flex items-end bg-black/50 backdrop-blur-sm sm:items-center sm:justify-center">
-          <div className="w-full max-w-md rounded-t-2xl border border-border bg-card sm:rounded-2xl">
-            <div className="flex items-center justify-between border-b border-border px-6 py-4">
-              <h2 className="text-lg font-semibold text-foreground">Add {logType}</h2>
-              <button
-                onClick={() => setShowAddForm(false)}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="overflow-auto p-6">
-              <AddLogForm
-                vehicleId={selectedVehicle.id}
-                logType={logType}
-                onSuccess={() => setShowAddForm(false)}
-              />
+<div className="fixed inset-0 z-50 flex items-end bg-black/50 backdrop-blur-sm sm:items-center sm:justify-center">
+  <div className="flex max-h-[85vh] w-full max-w-md flex-col rounded-t-2xl border border-border bg-card sm:rounded-2xl">
+    <div className="flex items-center justify-between border-b border-border px-6 py-4 flex-shrink-0">
+      <h2 className="text-lg font-semibold text-foreground">Add {logType}</h2>
+      <button onClick={() => setShowAddForm(false)} className="text-muted-foreground hover:text-foreground">
+        <X className="h-5 w-5" />
+      </button>
+    </div>
+    <div className="overflow-y-auto p-6">
+<AddLogForm
+  vehicleId={selectedVehicle.id}
+  logType={logType}
+  currentOdometer={selectedVehicle.odometer_km}
+  onSuccess={() => setShowAddForm(false)}
+/>
             </div>
           </div>
         </div>
