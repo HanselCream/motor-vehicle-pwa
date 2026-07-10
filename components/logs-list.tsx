@@ -18,16 +18,12 @@ export default function LogsList({ vehicleId, logType }: LogsListProps) {
     const fetchLogs = async () => {
       setLoading(true)
       try {
-        let query = supabase
-          .from(
-            logType === 'maintenance'
-              ? 'maintenance_logs'
-              : logType === 'fuel'
-                ? 'fuel_logs'
-                : 'expenses'
-          )
-          .select('*')
-          .eq('vehicle_id', vehicleId)
+        const table =
+          logType === 'maintenance'
+            ? 'maintenance_logs'
+            : logType === 'fuel'
+              ? 'fuel_logs'
+              : 'expenses'
 
         const dateField =
           logType === 'maintenance'
@@ -36,11 +32,20 @@ export default function LogsList({ vehicleId, logType }: LogsListProps) {
               ? 'fuel_date'
               : 'expense_date'
 
-        const { data } = await query.order(dateField, { ascending: false })
+        const { data, error } = await supabase
+          .from(table)
+          .select('*')
+          .eq('vehicle_id', vehicleId)
+          .order(dateField, { ascending: false })
+
+        console.log('[v0] Fetching', table, 'for vehicle', vehicleId, ':', data, error)
+
+        if (error) throw error
 
         setLogs(data || [])
       } catch (error) {
-        console.error('Error fetching logs:', error)
+        console.error('[v0] Error fetching logs:', error)
+        setLogs([])
       } finally {
         setLoading(false)
       }
