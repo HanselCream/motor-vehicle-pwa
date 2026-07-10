@@ -2,11 +2,11 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Gauge, LogSquare, FileText, TrendingUp, Award, Settings } from 'lucide-react'
+import { Gauge, History, FileText, TrendingUp, Award, Settings } from 'lucide-react'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: Gauge },
-  { href: '/dashboard/logs', label: 'Logs', icon: LogSquare },
+  { href: '/dashboard/logs', label: 'Logs', icon: History },
   { href: '/dashboard/analytics', label: 'Analytics', icon: TrendingUp },
   { href: '/dashboard/passport', label: 'Passport', icon: Award },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },

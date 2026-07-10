@@ -6,7 +6,7 @@ import VehicleSelector from '@/components/vehicle-selector'
 import OdometerGauge from '@/components/odometer-gauge'
 import QuickStats from '@/components/quick-stats'
 import RemindersWidget from '@/components/reminders-widget'
-import { Plus } from 'lucide-react'
+import { Plus, Gauge } from 'lucide-react'
 import Link from 'next/link'
 
 export default function DashboardPage() {
