@@ -24,8 +24,15 @@ export default function AddLogForm({ vehicleId, logType, onSuccess }: AddLogForm
       const data = Object.fromEntries(formData)
 
       if (logType === 'maintenance') {
-        await supabase.from('maintenance_logs').insert({
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
+
+        if (!user) throw new Error('User not authenticated')
+
+        const { error } = await supabase.from('maintenance_logs').insert({
           vehicle_id: vehicleId,
+          user_id: user.id,
           service_type: data.service_type,
           description: data.description,
           cost: data.cost ? parseFloat(data.cost as string) : null,
@@ -34,9 +41,18 @@ export default function AddLogForm({ vehicleId, logType, onSuccess }: AddLogForm
           provider: data.provider,
           location: data.location,
         })
+
+        if (error) throw error
       } else if (logType === 'fuel') {
-        await supabase.from('fuel_logs').insert({
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
+
+        if (!user) throw new Error('User not authenticated')
+
+        const { error } = await supabase.from('fuel_logs').insert({
           vehicle_id: vehicleId,
+          user_id: user.id,
           liters: parseFloat(data.liters as string),
           cost: parseFloat(data.cost as string),
           odometer_km: parseInt(data.odometer_km as string),
@@ -44,9 +60,18 @@ export default function AddLogForm({ vehicleId, logType, onSuccess }: AddLogForm
           fuel_type: data.fuel_type,
           location: data.location,
         })
+
+        if (error) throw error
       } else {
-        await supabase.from('expenses').insert({
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
+
+        if (!user) throw new Error('User not authenticated')
+
+        const { error } = await supabase.from('expenses').insert({
           vehicle_id: vehicleId,
+          user_id: user.id,
           category: data.category,
           description: data.description,
           amount: parseFloat(data.amount as string),
@@ -54,11 +79,16 @@ export default function AddLogForm({ vehicleId, logType, onSuccess }: AddLogForm
           payment_method: data.payment_method,
           notes: data.notes,
         })
+
+        if (error) throw error
       }
 
-      e.currentTarget.reset()
+      if (e.currentTarget) {
+        e.currentTarget.reset()
+      }
       onSuccess()
     } catch (err) {
+      console.error('[v0] Error adding log:', err)
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
