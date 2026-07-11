@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useVehicles } from '@/lib/hooks/use-vehicles'
+import { useVehicles, type Vehicle } from '@/lib/hooks/use-vehicles'
 import VehicleSelector from '@/components/vehicle-selector'
-import OdometerGauge from '@/components/odometer-gauge'
+import VehicleCard from '@/components/vehicle-card'
 import QuickStats from '@/components/quick-stats'
 import RemindersWidget from '@/components/reminders-widget'
 import { Plus, Gauge } from 'lucide-react'
@@ -11,9 +11,7 @@ import Link from 'next/link'
 
 export default function DashboardPage() {
   const { vehicles, loading, fetchVehicles } = useVehicles()
-  const [selectedVehicle, setSelectedVehicle] = useState<
-  ReturnType<typeof useVehicles>['vehicles'][number] | null
->(null)
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null)
 
   useEffect(() => {
     fetchVehicles()
@@ -56,7 +54,6 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6 px-4 py-6">
-      {/* Vehicle Selector */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-foreground">Motor</h1>
       </div>
@@ -69,13 +66,8 @@ export default function DashboardPage() {
 
       {selectedVehicle && (
         <>
-          {/* Odometer Gauge */}
-          <OdometerGauge vehicle={selectedVehicle} />
-
-          {/* Quick Stats */}
+          <VehicleCard vehicle={selectedVehicle} />
           <QuickStats vehicleId={selectedVehicle.id} />
-
-          {/* Reminders Widget */}
           <RemindersWidget vehicleId={selectedVehicle.id} />
         </>
       )}

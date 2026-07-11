@@ -23,9 +23,9 @@ export default function AddVehicleForm({ onSuccess }: AddVehicleFormProps) {
         make: formData.get('make'),
         model: formData.get('model'),
         year: parseInt(formData.get('year') as string),
-        color: formData.get('color'),
-        vin: formData.get('vin'),
-        license_plate: formData.get('license_plate'),
+        color: formData.get('color') || null,
+        vin: formData.get('vin') || null,
+        license_plate: formData.get('license_plate') || null,
         fuel_type: formData.get('fuel_type'),
         odometer_km: parseInt(formData.get('odometer_km') as string) || 0,
       }
@@ -43,15 +43,24 @@ export default function AddVehicleForm({ onSuccess }: AddVehicleFormProps) {
         },
       ])
 
-      if (error) throw error
+      if (error) {
+        // Supabase errors are PostgrestError objects, not Error instances —
+        // pull the real fields instead of letting them collapse to {}
+        console.error('[vehicle add] code:', error.code)
+        console.error('[vehicle add] message:', error.message)
+        console.error('[vehicle add] details:', error.details)
+        console.error('[vehicle add] hint:', error.hint)
+        throw error
+      }
 
       if (e.currentTarget) {
         e.currentTarget.reset()
       }
       onSuccess()
-    } catch (err) {
-      console.error('[v0] Vehicle add error:', err)
-      setError(err instanceof Error ? err.message : 'An error occurred')
+    } catch (err: any) {
+      const message =
+        err?.message || err?.error_description || err?.details || 'An error occurred'
+      setError(message)
     } finally {
       setLoading(false)
     }

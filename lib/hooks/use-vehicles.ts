@@ -37,10 +37,9 @@ export function useVehicles() {
         .order('created_at', { ascending: false })
 
       if (error) throw error
-      console.log('[v0] Fetched vehicles:', data)
       setVehicles(data || [])
     } catch (error) {
-      console.error('[v0] Error fetching vehicles:', error)
+      console.error('Error fetching vehicles:', error)
     } finally {
       setLoading(false)
     }
